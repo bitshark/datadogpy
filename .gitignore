@@ -1,4 +1,9 @@
 *.py[cod]
+.idea*
+.iml
+.swp
+.idea/vcs.xml
+
 
 # C extensions
 *.so

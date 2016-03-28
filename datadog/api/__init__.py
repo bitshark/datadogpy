@@ -24,6 +24,7 @@ from datadog.api.events import Event
 from datadog.api.infrastructure import Infrastructure
 from datadog.api.metrics import Metric
 from datadog.api.monitors import Monitor
+from datadog.api.reports import Reports
 from datadog.api.screenboards import Screenboard
 from datadog.api.graphs import Graph, Embed
 from datadog.api.hosts import Host

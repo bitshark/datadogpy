@@ -28,7 +28,7 @@ class HTTPClient(object):
 
     @classmethod
     def request(cls, method, path, body=None, attach_host_name=False, response_formatter=None,
-                error_formatter=None, **params):
+                error_formatter=None, absolute_url=False, **params):
         """
         Make an HTTP API request
 
@@ -76,7 +76,15 @@ class HTTPClient(object):
                 params['application_key'] = _application_key
 
             # Construct the url
-            url = "%s/api/%s/%s" % (_api_host, cls._api_version, path.lstrip("/"))
+            # EDIT: since Reports is at /reports/v2/<blah> endpoint instead of /api/v1/<blah> , test for absolute_url boolean
+            # if it's present , use the absolute url specified in subclass rather than the standard v1 api format
+            if absolute_url:
+                # subclass (ie Reports) wants access to an absolute url specified by Api resource type
+                # ie datadog-api-endpoint.com/<path>
+                url = "%s/%s" % (_api_host, path.lstrip("/"))
+            else:
+                # otherwise standard access ... ie datadog-api-endpoint.com/<classname>/api/<api_version>/<path>
+                url = "%s/api/%s/%s" % (_api_host, cls._api_version, path.lstrip("/"))
 
             # Attach host name to body
             if attach_host_name and body:
@@ -369,7 +377,7 @@ class ListableAPIResource(object):
 
         :returns: JSON response from HTTP API request
         """
-        return HTTPClient.request('GET', cls._class_url, **params)
+        return HTTPClient.request('GET', cls._class_url, None, False, None, None, cls._absolute_url, **params)
 
 
 class SearchableAPIResource(object):
